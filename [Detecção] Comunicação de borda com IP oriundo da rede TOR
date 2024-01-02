@@ -1,0 +1,8 @@
+let TOR_IP = externaldata(IPAddress:string)
+[@"https://raw.githubusercontent.com/dTMP3st/IoC/main/TOR_IP's.txt"] with (format="txt");
+CommonSecurityLog
+    | where SourceIP in (TOR_IP)
+    | where DeviceAction has "Accept"
+    | project-rename Source = SourceIP
+    | project-rename Destination = DestinationIP
+    | summarize dcount(Source), make_set(Source) by TimeGenerated, Source, Destination
